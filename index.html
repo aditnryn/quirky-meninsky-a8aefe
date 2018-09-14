@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Verifying</title>
+  <!-- Favicon -->
+  <link href="./assets/img/brand/favicon.png" rel="icon" type="image/png">
+  <!-- GoTrue -->
+  <script src="./assets/vendor/gotrue/gotrue.js"></script>
+  <script>
+    var auth = new GoTrue({
+      APIUrl: "https://quirky-meninsky-a8aefe.netlify.com/.netlify/identity",
+      audience: "",
+      setCookie: true
+    });
+    if (window.location.hash && window.location.hash.indexOf('#confirmation_token=') === 0) {
+      var token = window.location.hash.split('#confirmation_token=')[1];
+      auth
+        .confirm(token)
+        .then(response => {
+          console.log('Verification successful', response);
+          window.location = "./dashboard.html";
+        })
+        .catch(error => {
+          console.log('Verification unsuccessful', error);
+          window.location = "./login.html";
+        });
+    }
+    else if (window.location.hash && window.location.hash.indexOf('#recovery_token=') === 0) {
+      var token = window.location.hash.split('#recovery_token=')[1];
+      auth
+        .recover(token)
+        .then(response => {
+          console.log("Logged in as %s", response);
+          window.location = "./dashboard.html";
+        })
+        .catch(error => {
+          console.log("Failed to verify recover token: %o", error);
+          window.location = "./login.html";
+        });
+    }
+    else {
+      window.location = "./login.html";
+    }
+  </script>
+</head>
+
+</html>
